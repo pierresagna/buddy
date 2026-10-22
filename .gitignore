@@ -1,0 +1,56 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.log
+
+# ===== Dart / Flutter =====
+.dart_tool/
+.packages
+build/
+*.g.dart
+*.freezed.dart
+.flutter-plugins
+.flutter-plugins-dependencies
+ios/Pods/
+android/.gradle/
+android/key.properties
+*.jks
+*.keystore
+
+# ===== Secrets =====
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.yaml
+google-services.json
+GoogleService-Info.plist
+serviceAccountKey.json
+
+# ===== IDE / OS =====
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# ===== Data / DB =====
+*.sqlite
+*.sqlite3
+*.db
+dump.sql
+
+/server/.env
+/.env
