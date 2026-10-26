@@ -34,3 +34,17 @@ class TaskOut(BaseModel):
     sort_order: Optional[int] = None
     is_done: bool = False
     completed_at: Optional[datetime] = None
+
+
+# ---------- События (GET /events) ----------
+
+class EventOut(BaseModel):
+    event_id: int
+    title: str
+    description: Optional[str] = None
+    event_date: datetime
+
+
+class EventsResponse(BaseModel):
+    count: int            # количество событий (верхняя часть экрана)
+    events: list[EventOut]

@@ -1,5 +1,7 @@
 import os
 
+from datetime import datetime
+
 from fastapi import Depends, FastAPI, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, text
@@ -8,6 +10,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from jose import jwt, JWTError
 
 from models.models import (
+    EventsResponse,
     TaskOut,
     Token,
     TokenRefreshRequest,
@@ -170,3 +173,35 @@ def get_tasks(
         raise db_unavailable()
 
     return [dict(r) for r in rows]
+
+
+# =========================================================
+# Календарь событий: GET /events
+# =========================================================
+
+@app.get("/events", response_model=EventsResponse)
+def get_events(
+    date_from: datetime | None = Query(
+        None, description="Начало периода (по умолчанию — сейчас). Пример: 2026-11-01"
+    ),
+    date_to: datetime | None = Query(
+        None, description="Конец периода, не включительно. Пример: 2026-12-01"
+    ),
+    user_id: int = Depends(get_current_user_id),
+):
+    """Количество событий + список событий (название, дата, описание), по дате."""
+    sql = "SELECT event_id, title, description, event_date FROM events WHERE event_date >= :date_from "
+    params: dict = {"date_from": date_from or datetime.now()}
+    if date_to is not None:
+        sql += "AND event_date < :date_to "
+        params["date_to"] = date_to
+    sql += "ORDER BY event_date, event_id"
+
+    try:
+        with engine.connect() as conn:
+            rows = conn.execute(text(sql), params).mappings().all()
+    except SQLAlchemyError:
+        raise db_unavailable()
+
+    events = [dict(r) for r in rows]
+    return {"count": len(events), "events": events}

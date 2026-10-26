@@ -149,3 +149,13 @@ CREATE TABLE user_tasks (
     completed_at timestamp without time zone,
     PRIMARY KEY (user_id, task_id)
 );
+
+-- ---------- События (календарь событий: GET /events) ----------
+CREATE TABLE events (
+    event_id    serial PRIMARY KEY,
+    title       text NOT NULL,
+    description text,
+    event_date  timestamp without time zone NOT NULL
+);
+
+CREATE INDEX events_event_date_idx ON events (event_date);
